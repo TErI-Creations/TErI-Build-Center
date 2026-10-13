@@ -1,0 +1,100 @@
+#Funfact: There are 100 lines in 8:47 pm 34 seconds Tue Oct 13 2026 when my photo feature was added
+import os
+from PIL import Image
+
+# OPTIONAL STUFF ----------------------
+photo = False
+# UNREALESSED FEATURES ----------------
+video = False
+# -------------------------------------
+# Sprite system -----------------------
+running = True
+controls = True
+BG_WHITE = "\033[48;2;255;255;255m"
+FG_WHITE = "\033[38;2;255;255;255m"
+FACE_BLACK = "\033[38;2;0;0;0m"
+PIXEL_WHITE = "\033[48;2;255;255;255m[\033[38;2;255;255;255m"
+PIXEL_RED = "\033[48;2;255;0;0m[\033[38;2;255;0;0m"
+PIXEL_GREEN = "\033[48;2;0;255;0m[\033[38;2;0;255;0m"
+PIXEL_BLUE = "\033[48;2;0;0;255m[\033[38;2;0;0;255m"
+# Edit this value here ^ to change colors
+RESET = "\033[0m"
+sprite = [" '_'", "lllll", "lllll", "lllll", " lll", " lll"]
+
+player_x = 0
+player_y = 0
+
+
+
+def drawFrame(x, y):
+  os.system("clear")
+  for i in range(y):
+    print("")
+  for layer in sprite:
+    formatted_line = ""
+    for column in layer:
+      if column == " ":
+        formatted_line += column
+      elif column in ["'", "_", "'"]:
+        formatted_line += BG_WHITE + FACE_BLACK + column + RESET
+      elif column == "r":
+        formatted_line += PIXEL_RED + column + RESET
+      elif column == "g":
+        formatted_line += PIXEL_GREEN + column + RESET
+      elif column == "b":
+      	formatted_line += PIXEL_BLUE + column + RESET
+      else:
+        formatted_line += BG_WHITE + FG_WHITE + column + RESET
+    print("  " * x + formatted_line)
+
+
+# End of sprite system ----
+# -------------------------
+# Input loop --------------
+if not photo and not video:
+  while running:
+    drawFrame(player_x, player_y)
+
+    if controls == True:
+      cmd = input("Move [w/a/s/d] or q to quit:").strip().lower()
+    if cmd == "w":
+      player_y -= 1
+    elif cmd == "s":
+      player_y += 1
+    elif cmd == "a":
+      player_x -= 1
+    elif cmd == "d":
+      player_x += 1
+    elif cmd == "q":
+      running = False
+    else:
+      cmd = input("Press to quit virtual window:").strip().lower()
+    if cmd == "q":
+      running = False
+# End of input loop -----------------
+# -----------------------------------
+# Photo loop ------------------------
+if photo == True:
+  size = 20
+  if size < 10:
+    size = 10
+  elif size > 70:
+    size = 70
+  img = Image.open("Mandelbrot set.png").convert("RGB")
+  img = img.resize(
+      (size, int(size / 1.2))
+  )  # Keep it small to fit your terminal width
+
+  for y in range(img.height):
+    row = ""
+    for x in range(img.width):
+      r, g, b = img.getpixel((x, y))
+      # Print two spaces with truecolor background for a square pixel look
+      row += f"\033[48;2;{r};{g};{b}m  \033[0m"
+    print(row)
+# End of photo loop -----------------
+# -----------------------------------
+#/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+#        THE END (For now ;) )
+#/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+# -----------------------------------
